@@ -7,12 +7,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.15.0-168.0.dev <3.0.0"
+  sdk: ">=2.16.0-80.0.dev <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.4
   torch_control:                  # phone light control
     path: ../flutter-torch_control/
   vibration: ^1.7.4-nullsafety.0  # phone vibration
@@ -20,7 +20,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
+  flutter_launcher_icons: "^0.9.2"
 
 flutter:
   uses-material-design: true
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/app/icon.png"
+
