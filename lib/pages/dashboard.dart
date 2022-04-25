@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:torcher/pages/screen.dart';
 import 'package:torcher/state.dart';
+import 'package:torcher/utils/dialogs.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/editswatch.dart';
 import '../utils/swatches.dart';
 
+void launchWeb(String url) async {
+  final Uri uri = Uri.parse(url);
+  await launchUrl(uri);
+}
+
 class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key, required this.appState, required this.screenState}) : super(key: key);
+  const Dashboard({Key? key, required this.appState, required this.screenState})
+      : super(key: key);
 
   final AppState appState;
   final ScreenState screenState;
@@ -46,6 +54,30 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget buildTitle(String title) {
+    const textStyle = TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue);
+    return Expanded(
+      flex: 2,
+      child: InkWell(
+          onTap: () => showDialog(context: context, builder: buildAboutDialog),
+          child: Center(child: Text(title, style: textStyle))),
+    );
+  }
+
+  Widget buildFooter() {
+    const textStyle = TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 14, color: Colors.blue);
+    return Expanded(
+      flex: 2,
+      child: InkWell(
+          onTap: () => launchWeb(
+              'https://play.google.com/store/apps/dev?id=5830013704268208202'),
+          child: const Center(
+              child: Text('See TopAppField apps ...', style: textStyle))),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final onoff = IconButton(
@@ -59,9 +91,9 @@ class _DashboardState extends State<Dashboard> {
       child: Column(
         children: [
           Row(children: [
-            const Expanded(flex: 2, child: Center(child: Text('Torcher'))),
+            buildTitle('Flashlight'),
             Expanded(flex: 1, child: onoff),
-            const Expanded(flex: 2, child: Center(child: Text('Torcher'))),
+            buildTitle('Torcher')
           ]),
           const Text('Blinks per second'),
           Wrap(spacing: 2.0, children: [
@@ -85,13 +117,21 @@ class _DashboardState extends State<Dashboard> {
           const SizedBox(height: 16),
           const Text('Feedback'),
           Wrap(spacing: 3.0, children: [
+            _buildButtonFeedback('Torch', widget.appState.torchOn,
+                widget.appState.hasTorch ? widget.appState.toggleTorch : null),
+            _buildButtonFeedback('Screen', widget.appState.screenOn,
+                widget.appState.toggleScreen),
             _buildButtonFeedback(
-                'Torch', widget.appState.torchOn, widget.appState.hasTorch ? widget.appState.toggleTorch : null),
-            _buildButtonFeedback('Screen', widget.appState.screenOn, widget.appState.toggleScreen),
-            _buildButtonFeedback('Vibrate', widget.appState.vibrateOn,
-                widget.appState.hasVibrator ? widget.appState.toggleVibrate : null),
-            _buildButtonFeedback('Sound', widget.appState.soundOn, widget.appState.toggleSound),
+                'Vibrate',
+                widget.appState.vibrateOn,
+                widget.appState.hasVibrator
+                    ? widget.appState.toggleVibrate
+                    : null),
+            _buildButtonFeedback(
+                'Sound', widget.appState.soundOn, widget.appState.toggleSound),
           ]),
+          const SizedBox(height: 32),
+          buildFooter(),
         ],
       ),
     );
