@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.topappfield.torcher">
    <application
-        android:label="torcher"
+        android:label="Flashlight Torcher"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

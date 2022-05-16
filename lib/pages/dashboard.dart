@@ -13,8 +13,7 @@ void launchWeb(String url) async {
 }
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key, required this.appState, required this.screenState})
-      : super(key: key);
+  const Dashboard({Key? key, required this.appState, required this.screenState}) : super(key: key);
 
   final AppState appState;
   final ScreenState screenState;
@@ -55,8 +54,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget buildTitle(String title) {
-    const textStyle = TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue);
+    const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue);
     return Expanded(
       flex: 2,
       child: InkWell(
@@ -66,15 +64,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget buildFooter() {
-    const textStyle = TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 14, color: Colors.blue);
+    const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.blue);
     return Expanded(
       flex: 2,
       child: InkWell(
-          onTap: () => launchWeb(
-              'https://play.google.com/store/apps/dev?id=5830013704268208202'),
-          child: const Center(
-              child: Text('See TopAppField apps ...', style: textStyle))),
+          onTap: () => launchWeb('https://play.google.com/store/apps/dev?id=5830013704268208202'),
+          child: const Center(child: Text('See all TopAppField apps ...', style: textStyle))),
     );
   }
 
@@ -119,16 +114,10 @@ class _DashboardState extends State<Dashboard> {
           Wrap(spacing: 3.0, children: [
             _buildButtonFeedback('Torch', widget.appState.torchOn,
                 widget.appState.hasTorch ? widget.appState.toggleTorch : null),
-            _buildButtonFeedback('Screen', widget.appState.screenOn,
-                widget.appState.toggleScreen),
-            _buildButtonFeedback(
-                'Vibrate',
-                widget.appState.vibrateOn,
-                widget.appState.hasVibrator
-                    ? widget.appState.toggleVibrate
-                    : null),
-            _buildButtonFeedback(
-                'Sound', widget.appState.soundOn, widget.appState.toggleSound),
+            _buildButtonFeedback('Screen', widget.appState.screenOn, widget.appState.toggleScreen),
+            _buildButtonFeedback('Vibrate', widget.appState.vibrateOn,
+                widget.appState.hasVibrator ? widget.appState.toggleVibrate : null),
+            // _buildButtonFeedback('Sound', widget.appState.soundOn, widget.appState.toggleSound),
           ]),
           const SizedBox(height: 32),
           buildFooter(),
