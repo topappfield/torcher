@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     AppState state = AppState();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Torcher Flashlight Lamp',
+      title: 'Flashlight Torcher',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
