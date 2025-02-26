@@ -34,10 +34,7 @@ class ScreenState extends State<Screen> {
       enableDrag: true,
       backgroundColor: Colors.blue[100],
 //          barrierColor: Colors.blue[900],
-      builder: (context) => Dashboard(
-        appState: widget.appState,
-        screenState: this,
-      ),
+      builder: (context) => Dashboard(appState: widget.appState),
     );
   }
 
@@ -48,7 +45,16 @@ class ScreenState extends State<Screen> {
       // appBar: AppBar(title: Text('Top Flashlight')),
       backgroundColor: backgroundColor,
       body: InkWell(
-        child: const Center(child: Text("Tap for settings", style: TextStyle(color: Colors.cyan))),
+        child: const Center(
+          child: Text(
+            "Tap for settings",
+            style: TextStyle(
+              color: Colors.cyan,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
+        ),
         onTap: showDashboard,
       ),
     );
