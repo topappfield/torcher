@@ -97,6 +97,7 @@ class ScreenState extends State<Screen> {
                 'assets/icons/${basename}-${on ? 'on' : 'off'}.png',
                 color: on ? state.colorActive : state.colorInactive,
                 height: 64,
+                width: 64,
               ),
               Text(caption, style: TextStyle(color: state.colorActive)),
             ])));
@@ -220,19 +221,6 @@ class ScreenState extends State<Screen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // const SizedBox(height: 20),
-                    // buildHeader(),
-                    // const SizedBox(height: 50),
-                    // strobeSlider,
-                    // strobeText,
-                    // Expanded(child: Center()),
-                    // feedbackChooser,
-                    // Expanded(child: Center()),
-                    // buildSwatchChooser(),
-                    // brightnessSlider,
-                    // brightnessText,
-                    // const SizedBox(height: 20),
-
                     const SizedBox(height: 20),
                     feedbackChooser,
                     const SizedBox(height: 20),
