@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:torch_control/torch_control.dart';
-import 'package:torcher/pages/screen.dart';
 import 'package:vibration/vibration.dart';
+
 import 'utils/swatches.dart';
 
 class AppState {
@@ -11,48 +11,68 @@ class AppState {
     _init();
   }
 
+  // Screen control
+
+  void Function()? updateScreen;
+
+  // ********** Availability **********
+
   bool hasTorch = false;
   bool hasVibrator = false;
 
   void _init() async {
     hasTorch = await TorchControl.ready();
-    hasVibrator = await Vibration.hasVibrator() ?? false;
-  }
-
-  // ********** Property: on/off **********
-
-  bool _on = false;
-  bool get on => _on;
-
-  void toggle() {
-    _on = !_on;
-    _tick = _on ? 0 : 1; // even,odd phase
-    _checkFeedback(true);
-    _checkTimer();
+    hasVibrator = await Vibration.hasVibrator();
   }
 
   // ********** Property: strobe delay (blinks per second) **********
 
-  int _strobeDelay = 0;
-  int get strobeDelay => _strobeDelay;
-  set strobeDelay(int value) {
-    _strobeDelay = value;
-    _tick = 0;
-    _checkFeedback(true);
+  final List<int> _strobeDelays = [0, 1000, 500, 250, 167, 100, 50, 33, 25];
+  final List<int> _strobeHzs = [0, -1, 1, 2, 3, 5, 10, 15, 20]; // -1 -> 1/2
+  int get strobeMax => 6; // _strobeDelays.length - 1;
+
+  int _strobe = 0;
+  int get strobe => _strobe;
+
+  set strobe(int value) {
+    _strobe = value;
+    _makeFeedback();
     _checkTimer();
+  }
+
+  int get strobeDelay => _strobeDelays[strobe];
+
+  String get strobeHzText {
+    switch (strobe) {
+      case 0:
+        return "No blinking";
+      case 1:
+        return "Blinking frequency: 1/2 per second";
+      default:
+        return "Blinking frequency: ${_strobeHzs[strobe]} per second";
+    }
   }
 
   // ********** Property: (screen) color **********
 
-  int _colorIndex = 0;
-  int get colorIndex => _colorIndex;
-  set colorIndex(value) {
-    _colorIndex = value;
-    _updateScreen();
+  int _swatch = 10;
+  int get swatch => _swatch;
+  set swatch(value) => _swatch = value;
+
+  int _brightness = 4;
+  int get brightness => _brightness;
+  set brightness(value) => _brightness = value;
+
+  int get brightnessPercent => (brightness + 1) * 10;
+
+  Color get colorScreen {
+    var colorLevel = _brightness == 9 ? 50 : (9 - _brightness) * 100;
+    return _on && phaseOn && screenOn ? Swatches.at(swatch)[colorLevel]! : Colors.black;
   }
 
-  Color get _screenColor =>
-      _on && phaseOn && screenOn ? Swatches.screenOnColor(_colorIndex) : Swatches.screenOffColor(_colorIndex);
+  Color get colorActive => Swatches.at(_swatch)[!on || !screenOn || brightness < 5 ? 200 : 700]!;
+
+  Color get colorInactive => Swatches.at(_swatch)[!on || !screenOn || brightness < 5 ? 400 : 500]!;
 
   // ********** Feedback: torch **********
 
@@ -71,13 +91,6 @@ class AppState {
 
   void toggleScreen() {
     _screenOn = !_screenOn;
-    _updateScreen();
-  }
-
-  ScreenState? screenState;
-
-  void _updateScreen() {
-    screenState?.setScreenColor(_screenColor);
   }
 
   // ********** Feedback: vibrate **********
@@ -98,31 +111,41 @@ class AppState {
     _soundOn = !_soundOn;
   }
 
-  // ********** Timer **********
+  // ********** Property: on/off **********
 
-  Timer? timer;
+  bool _on = false;
+  bool get on => _on;
+
+  void toggle() {
+    _on = !_on;
+    _makeFeedback();
+    _checkTimer();
+  }
+
+  Timer? timerStrobe;
 
   int _tick = 0;
   int get tick => _tick;
   bool get phaseOn => tick % 2 == 0; // alternating on/even and off/odd phases
 
   void _checkTimer() {
-    if (timer != null) timer?.cancel();
-    timer = null;
-    if (_on && _strobeDelay > 0) {
-      timer = Timer.periodic(Duration(milliseconds: strobeDelay), _timerTick);
+    if (timerStrobe != null) timerStrobe?.cancel();
+    timerStrobe = null;
+    _tick = 0;
+    if (on && strobe > 0) {
+      timerStrobe = Timer.periodic(Duration(milliseconds: strobeDelay), _timerTick);
     }
   }
 
   void _timerTick(timer) {
-    if (!_on) return;
+    if (!on) return;
     _tick++;
-    _checkFeedback(false);
+    _makeFeedback();
   }
 
-  void _checkFeedback(bool forceScreenUpdate) {
-    if (forceScreenUpdate || _screenOn) _updateScreen();
-    TorchControl.turn(_on && _torchOn && phaseOn);
-    if (_on && _vibrateOn && phaseOn) Vibration.vibrate(duration: 20);
+  void _makeFeedback() {
+    updateScreen?.call();
+    TorchControl.turn(on && torchOn && phaseOn);
+    if (on && vibrateOn && phaseOn) Vibration.vibrate(duration: 20);
   }
 }
