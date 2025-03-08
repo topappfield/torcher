@@ -23,6 +23,11 @@ class AppState {
   void _init() async {
     hasTorch = await TorchControl.ready();
     hasVibrator = await Vibration.hasVibrator();
+    // set default feedback
+    _torchOn = hasTorch;
+    _screenOn = true;
+    _vibrateOn = hasVibrator;
+    updateScreen?.call();
   }
 
   // ********** Property: strobe delay (blinks per second) **********
