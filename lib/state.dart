@@ -95,7 +95,7 @@ class AppState {
 
   // ********** Feedback: vibrate **********
 
-  bool _vibrateOn = false;
+  bool _vibrateOn = true;
   bool get vibrateOn => _vibrateOn;
 
   void toggleVibrate() {
